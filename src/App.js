@@ -6,19 +6,49 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      userName: "Adam"
+      userName: "Adam",
+      todoItems: [{action: "Buy Flowers", done: false},
+                  {action: "Get Shoes", done: false},
+                  {action: "Collect Tickets", done: true},
+                  {action: "Call Joe", done: false}],
+      newItemText: ""
     }
   }
-  render() {
-    return (
+
+  updateNewTextValue = (event) => {
+    this.setState({ newItemText: event.target.value });
+  }
+
+  changeStateData = () => {
+    this.setState({
+      userName: this.state.userName === "Adam" ? "Bob" : "Adam"
+    })
+  }
+
+  createNewTodo = () => {
+    if(!this.state.todoItems.find(item => item.action === this.state.newItemText)) {
+      this.setState({
+        todoItems: [...this.state.todoItems, { action: this.state.newItemText, done: false }],
+        newItemText: ""
+      });
+    }
+  }
+  render = () => 
       <div>
         <h4 className="bg-primary text-white text-center p-2">
           {this.state.userName}'s To Do list
+          ({ this.state.todoItems.filter(t => !t.done).length} items to do)
       </h4>
-
+        <div className="my-1">
+          <input className="form-control"
+                value={ this.state.newItemText }
+                onChange={ this.updateNewTextValue } />
+            <button className="btn btn-primary mt-1"
+                onClick= { this.createNewTodo }>
+                  Add
+                </button>
+        </div>
       </div>
-    );
-  }
 }
 
 export default App;
