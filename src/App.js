@@ -1,6 +1,7 @@
 import React from 'react';
-//import logo from './logo.svg';
-//import './App.css';
+import { TodoBanner } from "./TodoBanner";
+import { TodoCreator } from "./TodoCreator";
+import { TodoRow } from "./TodoRow";
 
 class App extends React.Component {
   constructor(props) {
@@ -19,6 +20,13 @@ class App extends React.Component {
     this.setState({ newItemText: event.target.value });
   }
 
+  createNewTodo = (task) => {
+    if(!this.state.todoItems.find(item => item.action === task )) {
+      this.setState({
+        todoItems: [...this.state.todoItems, { action: task, done: false }]
+      });
+    }
+  }
   changeStateData = () => {
     this.setState({
       userName: this.state.userName === "Adam"
@@ -45,34 +53,13 @@ class App extends React.Component {
   });
 
   todoTableRows = () => this.state.todoItems.map(item =>
-    <tr key={item.action}>
-      <td>{item.action}</td>
-      <td>
-        <input
-          type="checkbox"
-          checked={item.done}
-          onChange={() => this.toggleTodo(item)}
-        />
-      </td>
-    </tr>
-  );
+    <TodoRow key={ item.action } item={ item } callback={ this.toggleTodo } />);
+
   render = () =>
     <div>
-      <h4 className="bg-primary text-white text-center p-2">
-        {this.state.userName}'s To Do list
-        ({this.state.todoItems.filter(t => !t.done).length} items to do)
-      </h4>
-      <div className="my-1">
-        <input
-          className="form-control"
-          value={this.state.newItemText}
-          onChange={this.updateNewTextValue}
-        />
-        <button className="btn btn-primary mt-1"
-          onClick={this.createNewTodo}
-        >
-          Add
-        </button>
+      <TodoBanner name={ this.state.userName } tasks={this.state.todoItems } />
+      <div className="container-fluid">
+        <TodoCreator callback={ this.createNewTodo } />
       </div>
       <table className="table table-striped table-bordered">
         <thead>
